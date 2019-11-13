@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29418.71
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "console-test", "console-test\console-test.csproj", "{51F66305-9417-4177-9741-7D2B2A4C7DB0}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "data-moving-pipes", "data-moving-pipes\data-moving-pipes.csproj", "{51E8B7A6-C0CE-4333-81CE-73CB95671F99}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{51F66305-9417-4177-9741-7D2B2A4C7DB0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{51F66305-9417-4177-9741-7D2B2A4C7DB0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{51F66305-9417-4177-9741-7D2B2A4C7DB0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{51F66305-9417-4177-9741-7D2B2A4C7DB0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{51E8B7A6-C0CE-4333-81CE-73CB95671F99}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{51E8B7A6-C0CE-4333-81CE-73CB95671F99}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{51E8B7A6-C0CE-4333-81CE-73CB95671F99}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{51E8B7A6-C0CE-4333-81CE-73CB95671F99}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F59B77D9-5496-4D88-A454-E68A017C99C1}
+	EndGlobalSection
+EndGlobal
