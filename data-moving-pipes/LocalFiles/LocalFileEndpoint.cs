@@ -31,15 +31,13 @@ namespace DataMovingPipes.LocalFiles
         {
             base.Pump();
 
-            LocalFileEndpoint mySpecializedCounterparty = CounterParty as LocalFileEndpoint;
-
             using (fileStream = File.OpenRead())
             {
                 byte[] b = new byte[4096];
                 int dataReaded = 0;
                 while ((dataReaded = fileStream.Read(b, 0, b.Length)) > 0)
                 {
-                    mySpecializedCounterparty.Collect(b, dataReaded);
+                    NextBlock.Collect(b, dataReaded);
                 }
             }
 
@@ -62,10 +60,14 @@ namespace DataMovingPipes.LocalFiles
 
         }
 
-        protected override void ValidateCounterparty()
+        protected override void ValidateConnectedBlocks()
         {
-            if (!(CounterParty is ItemTransferEndpoint))
-                throw new Exception("The DESTINATION endpoint shoud be a FileTransferEndpoint");
+            base.ValidateConnectedBlocks();
+            if (this.TransferEndpointType == TransferEndpointType.ORIGIN && !(this.NextBlock is Transformation || this.NextBlock is ItemTransferEndpoint))
+                throw new Exception("The NextBlock of an ORIGIN circuit block must be a Transformation or an ItemTransferEndpoint!");
+
+            if (this.TransferEndpointType == TransferEndpointType.DESTINATION && !(this.PreviousBlock is Transformation || this.PreviousBlock is ItemTransferEndpoint))
+                throw new Exception("The NextBlock of an DESTINATION circuit block must be a Transformation or an ItemTransferEndpoint!");
         }
     }
 }

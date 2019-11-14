@@ -25,18 +25,33 @@ namespace DataMovingPipes.LocalFiles
         {
             base.Pump();
 
-            LocalDirectoryEndpoint mySpecializedCounterparty = CounterParty as LocalDirectoryEndpoint;
+            LocalDirectoryEndpoint mySpecializedNextBlock = NextBlock as LocalDirectoryEndpoint;
 
             List<TransferPipe> individualTransferPipes = new List<TransferPipe>();
 
             foreach (FileInfo fi in DirectoryInfo.GetFiles(searchPattern))
             {
                 LocalFileEndpoint originFileEndpoint = new LocalFileEndpoint(fi);
-
                 originFileEndpointsList.Add(originFileEndpoint);
-                individualTransferPipes.Add(new TransferPipe(TransferCommand
-                    , _fromOrigin: originFileEndpoint
-                    , _toDestination: new LocalFileEndpoint(Path.Combine(mySpecializedCounterparty.DirectoryInfo.FullName, fi.Name))));
+
+
+                Transformation[] transformationsClone = null;
+                if (this.TransformationList != null)
+                {
+                    transformationsClone = new Transformation[this.TransformationList.Length];
+
+                    for (int i = 0; i < transformationsClone.Length; i++)
+                    {
+                        transformationsClone[i] = (Transformation)this.TransformationList[i].Clone();
+                    }
+                }                
+                individualTransferPipes.Add(
+                    new TransferPipe(TransferCommand
+                        , _fromOrigin: originFileEndpoint
+                        , _toDestination: new LocalFileEndpoint(Path.Combine(mySpecializedNextBlock.DirectoryInfo.FullName, fi.Name))
+                        , transformationsClone
+                    )
+                );
             }
 
             Parallel.ForEach(individualTransferPipes, (pipe) => pipe.Pump());
@@ -50,10 +65,14 @@ namespace DataMovingPipes.LocalFiles
             DirectoryInfo.Delete();
         }
 
-        protected override void ValidateCounterparty()
+        protected override void ValidateConnectedBlocks()
         {
-            if (!(CounterParty is CollectionTransferEndpoint))
-                throw new Exception("The DESTINATION endpoint shoud be a DirectoryTransferEndpoint");
+            base.ValidateConnectedBlocks();
+            if (this.TransferEndpointType == TransferEndpointType.ORIGIN && !(this.NextBlock is Transformation || this.NextBlock is CollectionTransferEndpoint))
+                throw new Exception("The NextBlock of an ORIGIN circuit block must be a Transformation or an ItemTransferEndpoint!");
+
+            if (this.TransferEndpointType == TransferEndpointType.DESTINATION && !(this.PreviousBlock is Transformation || this.PreviousBlock is CollectionTransferEndpoint))
+                throw new Exception("The PreviousBlock of an DESTINATION circuit block must be a Transformation or an CollectionTransferEndpoint!");
         }
     }
 }

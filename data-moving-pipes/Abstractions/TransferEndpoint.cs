@@ -5,24 +5,29 @@ using System.Text;
 
 namespace DataMovingPipes.Abstractions
 {
-    public abstract class TransferEndpoint
+    public abstract class TransferEndpoint : CircuitBlock
     {
         public TransferEndpointType TransferEndpointType { get; internal set; }
         public TransferCommand TransferCommand { get; internal set; }
-        public TransferEndpoint CounterParty { get; protected set; }
-        internal abstract void Destroy();
 
-        internal void ConnectTo(TransferEndpoint _counterparty)
+        protected override void ValidateConnectedBlocks()
         {
-            CounterParty = _counterparty;
-
-            if (_counterparty.CounterParty == null || !_counterparty.CounterParty.Equals(this))
-                _counterparty.ConnectTo(this);
-
-            ValidateCounterparty();
+            switch (this.TransferEndpointType)
+            {
+                case TransferEndpointType.ORIGIN:
+                    if (this.PreviousBlock != null)
+                        throw new Exception("The PreviousBlock of an oirigin CircuitBlock has to be null!");
+                    break;
+                case TransferEndpointType.DESTINATION:
+                    if (this.NextBlock != null)
+                        throw new Exception("The NextBlock of a destination CircuitBlock has to be null!");
+                    break;
+                default:
+                    break;
+            }
         }
 
-        protected abstract void ValidateCounterparty();
+        internal abstract void Destroy();
 
         internal virtual void Pump()
         {
